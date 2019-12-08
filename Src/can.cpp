@@ -56,7 +56,7 @@ void can_enable(void)
         hcan.Init.TimeSeg1 = CAN_BS1_4TQ;
         hcan.Init.TimeSeg2 = CAN_BS2_3TQ;
         hcan.Init.TimeTriggeredMode = DISABLE;
-        hcan.Init.AutoBusOff = DISABLE;
+        hcan.Init.AutoBusOff = ENABLE; //DISABLE->ENABLE
         hcan.Init.AutoWakeUp = DISABLE;
         hcan.Init.AutoRetransmission = ENABLE;
         hcan.Init.ReceiveFifoLocked = DISABLE;
@@ -167,10 +167,10 @@ uint32_t can_tx(CAN_TxHeaderTypeDef *tx_header, uint8_t (&buf)[CAN_MTU])
     uint32_t tx_mailbox;
     status = HAL_CAN_AddTxMessage(&hcan, tx_header, buf, &tx_mailbox);
 
-    GPIOC->BSRR=GPIO_BSRR_BS13;
-    GPIOC->BSRR=GPIO_BSRR_BR13;
+//    GPIOC->BSRR=GPIO_BSRR_BS13;
+//    GPIOC->BSRR=GPIO_BSRR_BR13;
 
-    //led_on();
+    led_on();
     return status;
 }
 
@@ -183,7 +183,6 @@ uint32_t can_rx(CAN_RxHeaderTypeDef *rx_header, uint8_t (&buf)[CAN_MTU])
 
     status = HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, rx_header, buf);
 
-    led_on();
     return status;
 }
 
