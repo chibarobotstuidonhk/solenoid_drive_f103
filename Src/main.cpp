@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************
- * @file           : main.c
+ * @file           : main.cpp
  * @brief          : Main program body
  ******************************************************************************
  * @attention
@@ -49,18 +49,21 @@ CAN_HandleTypeDef hcan;
 /* USER CODE BEGIN PV */
 bool ES_pushed = true;
 bool enabled = false; //default set to false
-uint8_t rx_payload_order[CAN_MTU];
+uint8_t rx_payload_data[CAN_MTU];
 
 uint16_t can_cmd_id = 0x100;
 uint16_t can_order_id = 0x101;
 
+uint8_t data = 0;
+
+uint8_t cmd = 0;
 uint8_t order = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_CAN_Init(void);
+//static void MX_CAN_Init(void);
 /* USER CODE BEGIN PFP */
 void SolenoidDrive(uint8_t order);
 void enable(void);
@@ -94,8 +97,6 @@ int main(void) {
 	/* Configure the system clock */
 	SystemClock_Config();
 
-	HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
-
 	/* USER CODE BEGIN SysInit */
 
 	/* USER CODE END SysInit */
@@ -123,15 +124,14 @@ int main(void) {
 		if (!ES_pushed) {
 
 			if (is_can_msg_pending(CAN_RX_FIFO0)) {
-				can_rx(&rx_header, rx_payload_order);
-				can_unpack(rx_payload_order, order);
+				can_rx(&rx_header, rx_payload_data);
 
 				if (rx_header.StdId == can_order_id) {
-//		for(int i=0;i<7;i++){
+					can_unpack(rx_payload_data, order);
 					led_on();
 					SolenoidDrive(order);
-//					HAL_Delay(500);
 				} else if (rx_header.StdId == can_cmd_id) {
+					can_unpack(rx_payload_data, cmd);
 					led_on();
 					if (order == 1) {
 						enable();
@@ -188,8 +188,9 @@ void enable(void) {
 void disable(void) {
 	GPIOB->BSRR = GPIO_BSRR_BS0; //on red led;
 	GPIOA->BSRR = GPIO_BSRR_BR7; //off yellow led;
+	GPIOB->BRR = 0b1111110000000000; //all reset;
+	GPIOA->BRR = 0b0000000100000000;
 	order = 0;
-	SolenoidDrive(order);
 	enabled = false;
 }
 
