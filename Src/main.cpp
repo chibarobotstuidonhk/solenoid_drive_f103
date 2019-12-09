@@ -121,10 +121,10 @@ int main(void) {
 		CheckES();
 //		ES_pushed = false;
 
-		if (!ES_pushed) {
+		if (is_can_msg_pending(CAN_RX_FIFO0)) {
+			can_rx(&rx_header, rx_payload_data);
 
-			if (is_can_msg_pending(CAN_RX_FIFO0)) {
-				can_rx(&rx_header, rx_payload_data);
+			if (!ES_pushed) {
 
 				if (rx_header.StdId == can_order_id) {
 					can_unpack(rx_payload_data, order);
@@ -133,7 +133,7 @@ int main(void) {
 				} else if (rx_header.StdId == can_cmd_id) {
 					can_unpack(rx_payload_data, cmd);
 					led_on();
-					if (order == 1) {
+					if (cmd == 1) {
 						enable();
 					} else {
 						disable();
@@ -160,7 +160,7 @@ void CheckES(void) {
 	if ((GPIOC->IDR & GPIO_IDR_IDR13)) {
 //		enable(); //for debug
 		ES_pushed = false;
-	} else { //fordebug
+	} else {
 		disable();
 		ES_pushed = true;
 	}
@@ -262,7 +262,6 @@ void SystemClock_Config(void) {
 //	/* USER CODE END CAN_Init 2 */
 //
 //}
-
 /**
  * @brief GPIO Initialization Function
  * @param None
