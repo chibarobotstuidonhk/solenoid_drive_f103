@@ -111,6 +111,7 @@ int main(void) {
 	can_init();
 	can_set_bitrate(CAN_BITRATE_500K);
 	can_enable();
+//	can_set_filter(can_cmd_id|can_order_id,can_cmd_id|can_order_id);
 
 	/* USER CODE END 2 */
 
