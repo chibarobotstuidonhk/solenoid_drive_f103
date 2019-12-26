@@ -109,7 +109,7 @@ int main(void) {
 	GPIOB->BSRR = GPIO_BSRR_BS0; //on red led;
 
 	can_init();
-	can_set_bitrate(CAN_BITRATE_500K);
+	can_set_bitrate(CAN_BITRATE_1000K);
 	can_enable();
 //	can_set_filter(can_cmd_id|can_order_id,can_cmd_id|can_order_id);
 
