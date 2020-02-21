@@ -119,6 +119,25 @@ int main(void) {
 	/* USER CODE BEGIN WHILE */
 	while (1) {
 
+		static uint16_t cnt = 0;
+		static bool init_done = false;
+		if (!init_done) {
+			cnt++;
+			if (cnt >= 255) {
+				if (hcan.State == HAL_CAN_STATE_ERROR) {
+					can_disable();
+					HAL_CAN_Init(&hcan);
+					if (hcan.State != HAL_CAN_STATE_ERROR) {
+						can_enable();
+						init_done = true;
+					}
+				} else {
+					init_done = true;
+				}
+				cnt = 0;
+			}
+		}
+
 		CheckES();
 //		ES_pushed = false;
 
@@ -151,7 +170,6 @@ int main(void) {
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-
 	if (GPIO_Pin == ES_Pin) {
 		CheckES();
 	}
