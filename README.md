@@ -1,4 +1,4 @@
-# NHK2020_solenoid
+# 
 まごころこめてつくりました
 cmdのidは0x100,orderのidは0x101
 cmdに1でenable,0でdisable
