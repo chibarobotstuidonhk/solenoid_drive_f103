@@ -1,4 +1,4 @@
-# 
+# solenoid_drive_f103
 まごころこめてつくりました
 cmdのidは0x100,orderのidは0x101
 cmdに1でenable,0でdisable
