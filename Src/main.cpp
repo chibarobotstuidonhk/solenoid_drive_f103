@@ -47,17 +47,14 @@ CAN_RxHeaderTypeDef rx_header;
 CAN_HandleTypeDef hcan;
 
 /* USER CODE BEGIN PV */
-bool ES_pushed = true;
-bool enabled = false; //default set to false
-uint8_t rx_payload_data[CAN_MTU];
+static bool ES_pushed = true;
+static bool enabled = false; //default set to false
+static uint8_t rx_payload_data[CAN_MTU];
 
-uint16_t can_cmd_id = 0x100;
-uint16_t can_order_id = 0x101;
+static constexpr uint16_t can_cmd_id = 0x100;
+static constexpr uint16_t can_order_id = 0x101;
 
-uint8_t data = 0;
-
-uint8_t cmd = 0;
-uint8_t order = 0;
+static uint8_t order = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -151,6 +148,7 @@ int main(void) {
 					led_on();
 					SolenoidDrive(order);
 				} else if (rx_header.StdId == can_cmd_id) {
+					uint8_t cmd = 0;
 					can_unpack(rx_payload_data, cmd);
 					led_on();
 					if (cmd == 1) {
